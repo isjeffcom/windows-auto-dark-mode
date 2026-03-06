@@ -155,7 +155,7 @@ export default function Schedule() {
 
       <motion.div style={{ marginTop: "var(--space-4)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
         <motion.button
-          className="btn btn-primary"
+          className="btn btn-primary btn-full"
           onClick={save}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}

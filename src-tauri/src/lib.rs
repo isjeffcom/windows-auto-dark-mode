@@ -12,15 +12,6 @@ use scheduler::Scheduler;
 use std::sync::Mutex;
 use tauri::State;
 
-/// Thread-local storage for tray menu items (stored on main thread, accessed via run_on_main_thread).
-#[cfg(target_os = "windows")]
-use std::cell::RefCell;
-
-#[cfg(target_os = "windows")]
-thread_local! {
-    static TRAY_ITEMS: RefCell<Option<(tray_icon::menu::MenuItem, tray_icon::menu::MenuItem)>> = RefCell::new(None);
-}
-
 pub struct AppState {
     pub config: Mutex<AppConfig>,
     pub scheduler: Mutex<Option<Scheduler>>,
@@ -49,11 +40,7 @@ fn get_theme_state() -> Result<ThemeState, String> {
     }
     #[cfg(not(windows))]
     {
-        Ok(ThemeState {
-            is_light: false,
-            apps_light: false,
-            system_light: false,
-        })
+        Ok(ThemeState { is_light: false, apps_light: false, system_light: false })
     }
 }
 
@@ -81,11 +68,7 @@ fn set_theme(state: State<AppState>, light: bool, is_manual: Option<bool>) -> Re
 
 #[tauri::command]
 fn get_config(state: State<AppState>) -> Result<AppConfig, String> {
-    state
-        .config
-        .lock()
-        .map_err(|e| e.to_string())
-        .map(|c| c.clone())
+    state.config.lock().map_err(|e| e.to_string()).map(|c| c.clone())
 }
 
 #[tauri::command]
@@ -113,17 +96,15 @@ fn get_next_switch(state: State<AppState>) -> Result<Option<(String, bool)>, Str
 }
 
 #[tauri::command]
-fn exit_app(app: tauri::AppHandle) {
-    let _ = app.exit(0);
+fn exit_app() {
+    std::process::exit(0);
 }
 
-/// App version (from tauri.conf.json — single source of truth).
 #[tauri::command]
 fn get_version(app: tauri::AppHandle) -> String {
     app.package_info().version.to_string()
 }
 
-/// Tray menu label strings by language (config.language: "en" | "zh").
 fn tray_menu_labels(lang: &str) -> (String, String) {
     match lang {
         "zh" => ("显示".to_string(), "退出".to_string()),
@@ -131,24 +112,26 @@ fn tray_menu_labels(lang: &str) -> (String, String) {
     }
 }
 
-/// Update tray menu item labels (called from frontend when language changes).
+// Static storage for tray menu items so update_tray_labels can update text.
+#[cfg(target_os = "windows")]
+static TRAY_ITEMS: std::sync::OnceLock<(
+    tauri::menu::MenuItem<tauri::Wry>,
+    tauri::menu::MenuItem<tauri::Wry>,
+)> = std::sync::OnceLock::new();
+
 #[tauri::command]
-fn update_tray_labels(app: tauri::AppHandle, lang: String) {
+fn update_tray_labels(lang: String) {
     #[cfg(target_os = "windows")]
     {
-        let (show_text, quit_text) = tray_menu_labels(&lang);
-        let _ = app.run_on_main_thread(move || {
-            TRAY_ITEMS.with(|cell| {
-                if let Some((show, quit)) = cell.borrow().as_ref() {
-                    show.set_text(show_text.as_str());
-                    quit.set_text(quit_text.as_str());
-                }
-            });
-        });
+        if let Some((show, quit)) = TRAY_ITEMS.get() {
+            let (show_text, quit_text) = tray_menu_labels(&lang);
+            let _ = show.set_text(&show_text);
+            let _ = quit.set_text(&quit_text);
+        }
     }
     #[cfg(not(target_os = "windows"))]
     {
-        let _ = (app, lang);
+        let _ = lang;
     }
 }
 
@@ -158,6 +141,12 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                api.prevent_close();
+                let _ = window.hide();
+            }
+        })
         .manage(AppState {
             config: Mutex::new(config.clone()),
             scheduler: Mutex::new(Some(scheduler)),
@@ -174,36 +163,20 @@ pub fn run() {
             update_tray_labels,
         ])
         .setup(|app| {
-            // Apply Windows 11 Acrylic effect to the main window.
+            // Apply Windows 11 Acrylic effect.
             #[cfg(target_os = "windows")]
             {
                 use tauri::Manager;
                 let window = app.get_webview_window("main").unwrap();
-                // dark-tinted acrylic: rgba(10, 10, 10, 248) — near-opaque, barely any bleed-through
                 let _ = window_vibrancy::apply_acrylic(&window, Some((10, 10, 10, 248)));
             }
 
-            // System tray icon (Rust-native so it always shows on Windows).
+            // Native tray icon via Tauri 2 built-in API.
             #[cfg(target_os = "windows")]
             {
-                use std::thread;
                 use tauri::Manager;
-                use tray_icon::menu::{Menu, MenuEvent, MenuItem};
-                use tray_icon::TrayIconBuilder;
-
-                let icon_path = app
-                    .path()
-                    .resource_dir()
-                    .ok()
-                    .and_then(|d| {
-                        let p = d.join("icons").join("Tray_Icon.ico");
-                        if p.exists() { Some(p) } else { None }
-                    })
-                    .or_else(|| {
-                        let p =
-                            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("icons").join("Tray_Icon.ico");
-                        if p.exists() { Some(p) } else { None }
-                    });
+                use tauri::menu::MenuItem;
+                use tauri::tray::{TrayIconBuilder, TrayIconEvent};
 
                 let lang: String = app
                     .try_state::<AppState>()
@@ -211,65 +184,56 @@ pub fn run() {
                     .unwrap_or_else(|| "en".to_string());
                 let (show_text, quit_text) = tray_menu_labels(&lang);
 
-                if let Some(path) = icon_path {
-                    if let Ok(rgba) = image::open(&path).map(|i| i.into_rgba8()) {
-                        let (w, h) = rgba.dimensions();
-                        if let Ok(icon) = tray_icon::Icon::from_rgba(rgba.into_raw(), w, h) {
-                            let show_i = MenuItem::with_id("show", show_text.as_str(), true, None);
-                            let quit_i = MenuItem::with_id("quit", quit_text.as_str(), true, None);
+                let show_i = MenuItem::with_id(app, "show", show_text.as_str(), true, None::<&str>)?;
+                let quit_i = MenuItem::with_id(app, "quit", quit_text.as_str(), true, None::<&str>)?;
 
-                            // Store clones in thread-local so update_tray_labels can update text later.
-                            TRAY_ITEMS.with(|cell| {
-                                *cell.borrow_mut() = Some((show_i.clone(), quit_i.clone()));
-                            });
+                // Store for later label updates.
+                let _ = TRAY_ITEMS.set((show_i.clone(), quit_i.clone()));
 
-                            let menu = Menu::new();
-                            let _ = menu.append(&show_i);
-                            let _ = menu.append(&quit_i);
+                let menu = tauri::menu::Menu::with_items(app, &[&show_i, &quit_i])?;
 
-                            if let Ok(tray) = TrayIconBuilder::new()
-                                .with_icon(icon)
-                                .with_tooltip("Auto Dark Mode")
-                                .with_menu(Box::new(menu))
-                                .build()
-                            {
-                                let app_handle = app.handle().clone();
+                let icon = app
+                    .default_window_icon()
+                    .ok_or("no app icon configured")?
+                    .clone();
 
-                                thread::spawn(move || {
-                                    while let Ok(event) = MenuEvent::receiver().recv() {
-                                        let id_str = format!("{:?}", event.id);
-                                        let id = id_str.trim_matches('"');
-                                        match id {
-                                            "show" => {
-                                                let app = app_handle.clone();
-                                                let _ = app_handle.run_on_main_thread(move || {
-                                                    if let Some(w) = app.get_webview_window("main") {
-                                                        let _ = w.show();
-                                                        let _ = w.set_focus();
-                                                    }
-                                                });
-                                            }
-                                            "quit" => {
-                                                app_handle.exit(0);
-                                            }
-                                            _ => {}
-                                        }
-                                    }
-                                });
-
-                                // Keep tray alive for app lifetime (TrayIcon is !Send so we leak it).
-                                std::mem::forget(tray);
+                let tray = TrayIconBuilder::new()
+                    .icon(icon)
+                    .tooltip("Auto Dark Mode")
+                    .menu(&menu)
+                    .on_menu_event(|app, event| match event.id.as_ref() {
+                        "show" => {
+                            if let Some(w) = app.get_webview_window("main") {
+                                let _ = w.show();
+                                let _ = w.unminimize();
+                                let _ = w.set_focus();
                             }
                         }
-                    }
-                }
+                        "quit" => std::process::exit(0),
+                        _ => {}
+                    })
+                    .on_tray_icon_event(|tray, event| {
+                        if let TrayIconEvent::DoubleClick { .. } = event {
+                            if let Some(w) = tray.app_handle().get_webview_window("main") {
+                                let _ = w.show();
+                                let _ = w.unminimize();
+                                let _ = w.set_focus();
+                            }
+                        }
+                    })
+                    .build(app)?;
+
+                // Leak so the tray icon lives for the app lifetime.
+                std::mem::forget(tray);
             }
 
-            // When terminal receives Ctrl+C, exit the app too.
+            // Ctrl+C in terminal also exits cleanly.
             let handle = app.handle().clone();
             let _ = ctrlc::set_handler(move || {
-                let _ = handle.exit(0);
+                std::process::exit(0);
             });
+            let _ = handle;
+
             Ok(())
         })
         .run(tauri::generate_context!())

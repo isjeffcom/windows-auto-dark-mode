@@ -67,25 +67,6 @@ function App() {
     return () => clearTimeout(t);
   }, []);
 
-  // Close-to-tray: tray icon is created in Rust (setup) so it always shows on Windows
-  useEffect(() => {
-    let unlistenClose: (() => void) | undefined;
-    (async () => {
-      try {
-        const win = getCurrentWindow();
-        unlistenClose = await win.onCloseRequested(async (event) => {
-          event.preventDefault();
-          await win.hide();
-        });
-      } catch {
-        // ignore
-      }
-    })();
-    return () => {
-      unlistenClose?.();
-    };
-  }, []);
-
   const navItems: { key: Page; labelKey: string }[] = [
     { key: "dashboard", labelKey: "nav.dashboard" },
     { key: "schedule", labelKey: "nav.schedule" },

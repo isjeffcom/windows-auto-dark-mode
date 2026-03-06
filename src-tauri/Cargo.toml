@@ -22,8 +22,6 @@ winreg = "0.52"
 sunrise-sunset-calculator = "1.0"
 ctrlc = "3.4"
 window-vibrancy = "0.5"
-tray-icon = "0.21"
-image = "0.25"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.52"
