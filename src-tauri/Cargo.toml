@@ -22,6 +22,8 @@ winreg = "0.52"
 sunrise-sunset-calculator = "1.0"
 ctrlc = "3.4"
 window-vibrancy = "0.5"
+ureq = { version = "2", default-features = false, features = ["tls"] }
+regex = "1"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.52"

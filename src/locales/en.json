@@ -52,7 +52,13 @@
   "about": {
     "title": "About",
     "description": "Automatically switch Windows between dark and light mode by time or by sunrise/sunset at your location.",
-    "version": "Version"
+    "version": "Version",
+    "checkForUpdates": "Check for updates",
+    "checking": "Checking...",
+    "youAreUpToDate": "You're up to date.",
+    "checkFailed": "Could not check for updates.",
+    "updateAvailable": "Update Available",
+    "updateHint": "Click to open the release page. Please quit this app before running the new installer to allow overwrite installation."
   },
   "common": {
     "save": "Save",

@@ -52,7 +52,13 @@
   "about": {
     "title": "关于",
     "description": "根据时间或您所在地区的日出日落，自动切换 Windows 的深色与浅色模式。",
-    "version": "版本"
+    "version": "版本",
+    "checkForUpdates": "检查更新",
+    "checking": "检查中…",
+    "youAreUpToDate": "当前已是最新版本。",
+    "checkFailed": "无法检查更新。",
+    "updateAvailable": "有新版本",
+    "updateHint": "点击打开发布页下载。安装新版本前请先退出本程序，以便覆盖安装。"
   },
   "common": {
     "save": "保存",

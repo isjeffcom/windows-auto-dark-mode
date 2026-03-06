@@ -105,6 +105,76 @@ fn get_version(app: tauri::AppHandle) -> String {
     app.package_info().version.to_string()
 }
 
+#[derive(serde::Serialize)]
+pub struct UpdateCheckResult {
+    pub has_update: bool,
+    pub latest_version: Option<String>,
+}
+
+/// Check for updates by fetching the GitHub releases page from Rust (no CORS).
+#[tauri::command]
+fn check_for_update(app: tauri::AppHandle) -> Result<UpdateCheckResult, String> {
+    const RELEASES_URL: &str = "https://github.com/isjeffcom/windows-auto-dark-mode/releases";
+    let current = app.package_info().version.to_string();
+
+    let body = ureq::get(RELEASES_URL)
+        .set("User-Agent", "AutoDarkMode-Updater/1.0")
+        .call()
+        .map_err(|e| e.to_string())?
+        .into_string()
+        .map_err(|e| e.to_string())?;
+
+    let re = regex::Regex::new(r#"/releases/tag/v?(\d+\.\d+\.\d+)"#).map_err(|e| e.to_string())?;
+    let latest = re
+        .captures(&body)
+        .and_then(|c| c.get(1))
+        .map(|m| m.as_str().to_string());
+
+    let has_update = match &latest {
+        Some(v) => is_version_newer(v, &current),
+        None => false,
+    };
+
+    Ok(UpdateCheckResult { has_update, latest_version: latest })
+}
+
+fn is_version_newer(latest: &str, current: &str) -> bool {
+    let parse = |s: &str| {
+        s.trim()
+            .split('.')
+            .map(|n| n.parse::<u32>().unwrap_or(0))
+            .collect::<Vec<_>>()
+    };
+    let a = parse(latest);
+    let b = parse(current);
+    for i in 0..a.len().max(b.len()) {
+        let x = a.get(i).copied().unwrap_or(0);
+        let y = b.get(i).copied().unwrap_or(0);
+        if x > y {
+            return true;
+        }
+        if x < y {
+            return false;
+        }
+    }
+    false
+}
+
+const RELEASE_URL: &str = "https://github.com/isjeffcom/windows-auto-dark-mode/releases";
+
+/// Open the GitHub releases page in the default browser.
+#[tauri::command]
+fn open_release_page() -> Result<(), String> {
+    #[cfg(windows)]
+    std::process::Command::new("cmd")
+        .args(["/C", "start", "", RELEASE_URL])
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    #[cfg(not(windows))]
+    let _ = RELEASE_URL;
+    Ok(())
+}
+
 fn tray_menu_labels(lang: &str) -> (String, String) {
     match lang {
         "zh" => ("显示".to_string(), "退出".to_string()),
@@ -161,6 +231,8 @@ pub fn run() {
             get_version,
             exit_app,
             update_tray_labels,
+            open_release_page,
+            check_for_update,
         ])
         .setup(|app| {
             // Apply Windows 11 Acrylic effect.
