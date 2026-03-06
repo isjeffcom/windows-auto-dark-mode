@@ -1,3 +1,4 @@
+![Banner](readme_cover.png)
 # 自动深色模式 (Auto Dark Mode)
 
 一款轻量级 Windows 应用，按**固定时间**或**日出/日落**（按地区）自动在深色与浅色模式之间切换。使用 [Tauri 2](https://v2.tauri.app/) + React 构建。
