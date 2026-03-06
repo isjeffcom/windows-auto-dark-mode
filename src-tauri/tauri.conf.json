@@ -30,14 +30,7 @@
     "active": true,
     "targets": ["nsis"],
     "icon": ["icons/Tray_Icon.ico"],
-    "resources": ["icons/*.ico"],
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowElevation": true,
-      "installerIcon": "icons/Tray_Icon.ico",
-      "installMode": "currentUser"
-    }
+    "resources": ["icons/*.ico"]
   },
   "plugins": {
     "shell": {
