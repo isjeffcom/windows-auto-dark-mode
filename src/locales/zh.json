@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "自动深色模式",
+    "subtitle": "按时间或地区自动切换主题"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "schedule": "计划",
+    "settings": "设置",
+    "about": "关于"
+  },
+  "dashboard": {
+    "currentTheme": "当前主题",
+    "nowIs": "当前：{{theme}}",
+    "light": "浅色",
+    "dark": "深色",
+    "switchTo": "切换到{{theme}}",
+    "enabled": "自动切换已开启",
+    "nextSwitch": "下次切换",
+    "scheduleHint": "在「计划」页设置",
+    "at": "于 {{time}}",
+    "toDark": "切换为深色",
+    "toLight": "切换为浅色",
+    "manual": "手动",
+    "on": "开",
+    "off": "关",
+    "switching": "正在切换…",
+    "switchingHint": "请稍候，请勿重复点击"
+  },
+  "schedule": {
+    "mode": "切换方式",
+    "fixed": "固定时间",
+    "location": "日出日落（按地区）",
+    "sunrise": "日出时间",
+    "sunset": "日落时间",
+    "latitude": "纬度",
+    "longitude": "经度",
+    "useLocation": "按地区计算日出日落",
+    "latLonHint": "输入经纬度（例如北京：39.9, 116.4）"
+  },
+  "settings": {
+    "title": "设置",
+    "switchSystem": "切换系统主题（任务栏、窗口边框）",
+    "switchApps": "切换应用主题（窗口标题栏）",
+    "switchSystemHint": "开启后，任务栏和窗口边框会随深/浅色切换。",
+    "switchAppsHint": "开启后，应用标题栏会随深/浅色切换。",
+    "autostart": "开机自启",
+    "showTray": "显示托盘图标",
+    "notifyOnSwitch": "切换时通知",
+    "language": "语言"
+  },
+  "about": {
+    "title": "关于",
+    "description": "根据时间或您所在地区的日出日落，自动切换 Windows 的深色与浅色模式。",
+    "version": "版本"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭",
+    "loading": "加载中…",
+    "exitApp": "退出程序"
+  }
+}

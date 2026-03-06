@@ -1,0 +1,551 @@
+/* ============================================
+   Auto Dark Mode — Win11 Unified Flat Design
+   Acrylic from OS; UI is transparent layers.
+   No cards — one material surface throughout.
+   ============================================ */
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+
+:root, [data-theme="dark"] {
+  --bg-color:        rgba(23, 23, 23, 0.77);
+  --sidebar-bg:      rgba(16, 16, 16, 0.72);
+  --sidebar-border:  rgba(255, 255, 255, 0.07);
+
+  --layer-hover:     rgba(255, 255, 255, 0.07);
+  --layer-active:    rgba(255, 255, 255, 0.12);
+  --layer-control:   rgba(255, 255, 255, 0.09);
+  --layer-input:     rgba(255, 255, 255, 0.08);
+
+  --divider:         rgba(255, 255, 255, 0.07);
+  --border-default:  rgba(255, 255, 255, 0.10);
+  --border-strong:   rgba(255, 255, 255, 0.18);
+
+  --text-primary:   #f0f0f0;
+  --text-secondary: #8e8e8e;
+  --text-tertiary:  #7c7c7c;
+
+  --accent:    #e0e0e0;
+  --accent-fg: #101010;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+[data-theme="light"] {
+  --bg-color:        rgba(255, 255, 255, 0.75);
+
+  --sidebar-bg:      rgba(243, 243, 243, 0.75);
+  --sidebar-border:  rgba(0, 0, 0, 0.07);
+
+  --layer-hover:     rgba(0, 0, 0, 0.04);
+  --layer-active:    rgba(0, 0, 0, 0.07);
+  --layer-control:   rgba(0, 0, 0, 0.05);
+  --layer-input:     rgba(0, 0, 0, 0.04);
+
+  --divider:         rgba(0, 0, 0, 0.07);
+  --border-default:  rgba(0, 0, 0, 0.10);
+  --border-strong:   rgba(0, 0, 0, 0.18);
+
+  --text-primary:   #111111;
+  --text-secondary: #666666;
+  --text-tertiary:  #666666;
+
+  --accent:    #111111;
+  --accent-fg: #ffffff;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+/* ── App shell ─────────────────────────────── */
+.app {
+  height: 100%;
+  display: flex;
+  background: var(--sidebar-bg);
+}
+
+/* ── Sidebar ───────────────────────────────── */
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 10px 14px;
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 12px 20px;
+}
+
+.sidebar-logo {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* Win11-sized nav items */
+.sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.sidebar-item:hover {
+  background: var(--layer-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-item.active {
+  background: var(--layer-active);
+  color: var(--text-primary);
+  font-weight: 600;
+  border-color: var(--border-default);
+}
+
+/* ── Main content ──────────────────────────── */
+.main-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: transparent;
+}
+
+.content {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+}
+
+/* scrollbar */
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--layer-active); border-radius: 999px; }
+
+/* ── Section / flat layout (replaces panel cards) ── */
+.section {
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--divider);
+}
+.section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* small uppercase section header */
+.section-header {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 18px;
+}
+
+/* kept for compatibility — renders as flat section header only */
+.panel {
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--divider);
+}
+.panel:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.panel-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 18px;
+}
+
+/* ── Theme orb (CSS div — no SVG filter bleed) ── */
+.theme-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 4px;
+}
+
+/* The glow is just box-shadow, naturally clipped to the div */
+.orb {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.orb-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 12px;
+  margin-bottom: 20px;
+}
+
+/* ── Theme segmented control ──────────────── */
+.theme-btn-group {
+  display: inline-flex;
+  width: 100%;
+  background: var(--layer-control);
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.theme-btn {
+  flex: 1;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.theme-btn:hover:not(.active):not(:disabled) {
+  color: var(--text-primary);
+  background: var(--layer-hover);
+}
+
+.theme-btn.active {
+  background: var(--layer-active);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+.theme-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Toggle switch ────────────────────────── */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toggle {
+  width: 38px;
+  height: 21px;
+  background: var(--layer-control);
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.22s ease, border-color 0.22s ease;
+}
+
+.toggle:hover { border-color: var(--border-strong); }
+
+.toggle.on {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 15px; height: 15px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.22s;
+}
+
+.toggle.on::after {
+  transform: translateX(17px);
+  background: var(--accent-fg);
+}
+
+/* ── Generic buttons ──────────────────────── */
+.btn {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border-default);
+  background: var(--layer-control);
+  color: var(--text-primary);
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--layer-hover);
+  border-color: var(--border-strong);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.84;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Light red exit button */
+.btn-exit {
+  width: 100%;
+  margin-top: 12px;
+  background: rgba(180, 70, 70, 0.25);
+  border-color: rgba(200, 90, 90, 0.5);
+  color: #e8a0a0;
+}
+
+.btn-exit:hover {
+  background: rgba(180, 70, 70, 0.4);
+  border-color: rgba(220, 100, 100, 0.65);
+  color: #f0b0b0;
+}
+
+[data-theme="light"] .btn-exit {
+  background: rgba(180, 70, 70, 0.12);
+  border-color: rgba(180, 80, 80, 0.4);
+  color: #b04040;
+}
+
+[data-theme="light"] .btn-exit:hover {
+  background: rgba(180, 70, 70, 0.22);
+  border-color: rgba(180, 80, 80, 0.55);
+  color: #c05050;
+}
+
+.settings-actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ── Inputs ───────────────────────────────── */
+input[type="text"],
+input[type="number"],
+select {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 11px;
+  background: var(--layer-input);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  border-radius: 6px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  color-scheme: dark;
+}
+
+[data-theme="light"] input[type="text"],
+[data-theme="light"] input[type="number"],
+[data-theme="light"] select {
+  color-scheme: light;
+}
+
+select option {
+  background: #1e1e1e;
+  color: #f0f0f0;
+}
+
+/* Dark mode: hover/selected only slightly brighter, not stark white */
+select option:hover,
+select option:focus,
+select option:checked {
+  background: #2d2d2d;
+  color: #f5f5f5;
+}
+
+[data-theme="light"] select option {
+  background: #ffffff;
+  color: #111111;
+}
+
+[data-theme="light"] select option:hover,
+[data-theme="light"] select option:focus,
+[data-theme="light"] select option:checked {
+  background: #e8e8e8;
+  color: #111111;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+/* ── Type utils ───────────────────────────── */
+.section-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Prevent label stacking vertically in settings rows (e.g. 显示托盘图标) */
+.toggle-wrap > *:first-child {
+  flex: 1;
+  min-width: 6em;
+}
+.toggle-wrap .section-label {
+  white-space: nowrap;
+}
+
+.section-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.55;
+}
+
+/* settings rows within a section */
+.settings-row {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--divider);
+}
+.settings-row:last-of-type { border-bottom: none; padding-bottom: 0; }
+.settings-row:first-of-type { padding-top: 0; }
+
+.form-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.form-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 100px;
+}
+
+.next-switch {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.next-switch strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── Switching progress ───────────────────── */
+.theme-switching {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 4px;
+}
+
+.theme-switching-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.theme-switching-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.progress-track {
+  width: 100%;
+  height: 2px;
+  background: var(--layer-control);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.progress-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 13px;
+  background: transparent;
+}

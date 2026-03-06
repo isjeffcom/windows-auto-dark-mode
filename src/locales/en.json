@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "Auto Dark Mode",
+    "subtitle": "Schedule & location-based theme switching"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "schedule": "Schedule",
+    "settings": "Settings",
+    "about": "About"
+  },
+  "dashboard": {
+    "currentTheme": "Current theme",
+    "nowIs": "Currently: {{theme}}",
+    "light": "Light",
+    "dark": "Dark",
+    "switchTo": "Switch to {{theme}}",
+    "enabled": "Auto switch enabled",
+    "nextSwitch": "Next switch",
+    "scheduleHint": "Set in Schedule tab",
+    "at": "at {{time}}",
+    "toDark": "to Dark",
+    "toLight": "to Light",
+    "manual": "Manual",
+    "on": "ON",
+    "off": "OFF",
+    "switching": "Switching…",
+    "switchingHint": "Please wait, do not click again"
+  },
+  "schedule": {
+    "mode": "Switch by",
+    "fixed": "Fixed time",
+    "location": "Sunrise & sunset (location)",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "useLocation": "Use location for sunrise/sunset",
+    "latLonHint": "Enter coordinates (e.g. Beijing: 39.9, 116.4)"
+  },
+  "settings": {
+    "title": "Settings",
+    "switchSystem": "Switch system theme (taskbar, window borders)",
+    "switchApps": "Switch app theme (window title bars)",
+    "switchSystemHint": "When on, taskbar and window frame follow light/dark.",
+    "switchAppsHint": "When on, app title bars follow light/dark.",
+    "autostart": "Start with Windows",
+    "showTray": "Show tray icon",
+    "notifyOnSwitch": "Notify when theme switches",
+    "language": "Language"
+  },
+  "about": {
+    "title": "About",
+    "description": "Automatically switch Windows between dark and light mode by time or by sunrise/sunset at your location.",
+    "version": "Version"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "loading": "Loading...",
+    "exitApp": "Exit application"
+  }
+}
