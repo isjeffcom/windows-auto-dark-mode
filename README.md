@@ -1,3 +1,4 @@
+![Alt text](readme_cover.png)
 # Auto Dark Mode
 
 A lightweight Windows app that automatically switches between dark and light mode by **fixed time** or **sunrise/sunset** (location-based). Built with [Tauri 2](https://v2.tauri.app/) and React.
