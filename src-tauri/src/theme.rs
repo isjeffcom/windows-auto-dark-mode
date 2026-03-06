@@ -21,10 +21,10 @@ const SYSTEM_LIGHT: &str = "SystemUsesLightTheme";
 const DWM_COLORIZATION: &str = "ColorizationColor";
 const TIMEOUT_MS: u32 = 5000;
 const DWM_REFRESH_SLEEP_MS: u64 = 800;
-/// Delay before repeating broadcasts so secondary monitor taskbar can catch up
-const DELAYED_BROADCAST_MS: u64 = 1600;
-const REPEAT_BROADCAST_INTERVAL_MS: u64 = 250;
-const REPEAT_BROADCAST_COUNT: u32 = 3;
+/// Delay before one more full refresh so Explorer surfaces on secondary monitors can catch up.
+const DELAYED_FULL_REFRESH_MS: u64 = 1400;
+const FOLLOW_UP_BROADCAST_INTERVAL_MS: u64 = 300;
+const FOLLOW_UP_BROADCAST_COUNT: u32 = 3;
 
 fn hwnd_broadcast() -> HWND {
     HWND(0xffff as *mut std::ffi::c_void)
@@ -58,6 +58,7 @@ fn get_dwm_colorization_color() -> Option<u32> {
 fn set_dwm_colorization_color(value: u32) -> std::io::Result<()> {
     let key = open_dwm(true)?;
     key.set_value(DWM_COLORIZATION, &value)?;
+    key.flush()?;
     Ok(())
 }
 
@@ -78,7 +79,9 @@ fn broadcast_dwm_colorization(color: u32, blend: bool) {
 
 /// Force DWM/taskbar to refresh by briefly changing ColorizationColor then restoring (like Windows-Auto-Night-Mode).
 fn refresh_dwm_via_colorization() {
-    let Some(original) = get_dwm_colorization_color() else { return };
+    let Some(original) = get_dwm_colorization_color() else {
+        return;
+    };
     // Tweak one digit so DWM sees a change (reference: last hex digit +/- 1)
     let tweaked = original ^ 1u32;
     if let Ok(()) = set_dwm_colorization_color(tweaked) {
@@ -100,6 +103,16 @@ fn broadcast_theme_change() {
             WM_SETTINGCHANGE,
             WPARAM(0),
             LPARAM(immersive.as_ptr() as isize),
+            flags,
+            TIMEOUT_MS,
+            None,
+        );
+        // Some Explorer surfaces only repaint after a generic settings change broadcast.
+        let _ = SendMessageTimeoutW(
+            hwnd_broadcast(),
+            WM_SETTINGCHANGE,
+            WPARAM(0),
+            LPARAM(0),
             flags,
             TIMEOUT_MS,
             None,
@@ -140,16 +153,19 @@ pub fn set_theme(
     if switch_system {
         key.set_value(SYSTEM_LIGHT, &value)?;
     }
+    // Explorer may read these values during WM_SETTINGCHANGE handling, so flush first.
+    key.flush()?;
     broadcast_theme_change();
     refresh_dwm_via_colorization();
     broadcast_theme_change();
-    // Delayed repeat: secondary monitor taskbar often updates one step behind; give it
-    // another round of broadcasts so it catches up.
+    // Delayed retry: secondary monitor taskbar can still lag one update behind, so give
+    // DWM and Explorer one more nudge after the registry values are fully visible.
     std::thread::spawn(|| {
-        thread::sleep(Duration::from_millis(DELAYED_BROADCAST_MS));
-        for _ in 0..REPEAT_BROADCAST_COUNT {
+        thread::sleep(Duration::from_millis(DELAYED_FULL_REFRESH_MS));
+        refresh_dwm_via_colorization();
+        for _ in 0..FOLLOW_UP_BROADCAST_COUNT {
             broadcast_theme_change();
-            thread::sleep(Duration::from_millis(REPEAT_BROADCAST_INTERVAL_MS));
+            thread::sleep(Duration::from_millis(FOLLOW_UP_BROADCAST_INTERVAL_MS));
         }
     });
     Ok(())
