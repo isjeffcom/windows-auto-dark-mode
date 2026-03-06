@@ -18,7 +18,7 @@
 
 ## 下载（GitHub Releases）
 
-- **安装包**（`Auto Dark Mode_1.0.0_x64-setup.exe`）：推荐。运行后安装，可选“开始菜单”和“开机自启”。
+- **安装包**（`Auto Dark Mode_[版本]_x64-setup.exe`）：推荐。运行后安装，可选“开始菜单”和“开机自启”。
 - **便携版**（`windows-auto-dark-mode.exe`）：单文件，无需安装，解压或复制到任意目录运行即可。
 
 ## 从源码构建

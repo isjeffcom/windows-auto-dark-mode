@@ -117,6 +117,12 @@ fn exit_app(app: tauri::AppHandle) {
     let _ = app.exit(0);
 }
 
+/// App version (from tauri.conf.json — single source of truth).
+#[tauri::command]
+fn get_version(app: tauri::AppHandle) -> String {
+    app.package_info().version.to_string()
+}
+
 /// Tray menu label strings by language (config.language: "en" | "zh").
 fn tray_menu_labels(lang: &str) -> (String, String) {
     match lang {
@@ -163,6 +169,7 @@ pub fn run() {
             save_config,
             get_sun_times,
             get_next_switch,
+            get_version,
             exit_app,
             update_tray_labels,
         ])

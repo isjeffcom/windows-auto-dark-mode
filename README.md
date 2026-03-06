@@ -18,7 +18,7 @@ A lightweight Windows app that automatically switches between dark and light mod
 
 ## Download (GitHub Releases)
 
-- **Installer** (`Auto Dark Mode_1.0.0_x64-setup.exe`): Recommended. Run to install and optionally add a Start Menu shortcut and “Start with Windows”.
+- **Installer** (`Auto Dark Mode_[VERSION]_x64-setup.exe`): Recommended. Run to install and optionally add a Start Menu shortcut and “Start with Windows”.
 - **Portable** (`windows-auto-dark-mode.exe`): Single executable; no install. Place anywhere and run.
 
 ## Build from source
@@ -49,7 +49,7 @@ After `npm run tauri:build`:
 
 | Artifact | Path |
 |----------|------|
-| **Installer** | `src-tauri/target/release/bundle/nsis/Auto Dark Mode_1.0.0_x64-setup.exe` |
+| **Installer** | `src-tauri/target/release/bundle/nsis/Auto Dark Mode_[VERSION]_x64-setup.exe` |
 | **Portable exe** | `src-tauri/target/release/windows-auto-dark-mode.exe` |
 
 Use these for **GitHub Releases**: upload the setup exe and (optionally) the portable exe or a zip containing it.

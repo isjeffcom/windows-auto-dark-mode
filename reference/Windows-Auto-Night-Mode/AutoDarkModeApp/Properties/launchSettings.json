@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "AutoDarkModeApp": {
-      "commandName": "Project",
-      "workingDirectory": "..\\bin\\Debug\\adm-app\\"
-    }
-  }
-}

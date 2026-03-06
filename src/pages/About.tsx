@@ -1,8 +1,15 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function About() {
   const { t } = useTranslation();
+  const [version, setVersion] = useState("–");
+
+  useEffect(() => {
+    invoke<string>("get_version").then(setVersion).catch(() => setVersion("–"));
+  }, []);
 
   return (
     <motion.div
@@ -37,7 +44,7 @@ export default function About() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.15 }}
       >
-        {t("about.version")} 1.0.0
+        {t("about.version")} {version}
       </motion.p>
     </motion.div>
   );
