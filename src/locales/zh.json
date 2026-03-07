@@ -31,6 +31,8 @@
     "mode": "切换方式",
     "fixed": "固定时间",
     "location": "日出日落（按地区）",
+    "saving": "保存中…",
+    "saved": "已保存",
     "sunrise": "日出时间",
     "sunset": "日落时间",
     "latitude": "纬度",

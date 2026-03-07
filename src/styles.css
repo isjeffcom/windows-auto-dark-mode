@@ -784,6 +784,15 @@ input:focus, select:focus {
   line-height: 1.55;
 }
 
+.schedule-save-error {
+  font-size: 12px;
+  color: #e06c75;
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  background: rgba(224, 108, 117, 0.12);
+  border-radius: 6px;
+}
+
 /* settings rows within a section */
 .settings-row {
   padding: 16px 0;

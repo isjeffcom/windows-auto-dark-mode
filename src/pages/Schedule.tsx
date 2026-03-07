@@ -4,12 +4,20 @@ import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import TimePicker from "../components/TimePicker";
 
+/** Must match backend AppConfig (camelCase from serde). */
 interface AppConfig {
   enabled: boolean;
   mode: "Fixed" | "Location";
   sunriseTime: string;
   sunsetTime: string;
   location: { enabled: boolean; lat: number; lon: number };
+  switchSystem?: boolean;
+  switchApps?: boolean;
+  autostart?: boolean;
+  showTray?: boolean;
+  notifyOnSwitch?: boolean;
+  language?: string;
+  manualOverrideUntil?: number | null;
 }
 
 const defaultConfig: AppConfig = {
@@ -24,28 +32,53 @@ export default function Schedule() {
   const { t } = useTranslation();
   const [config, setConfig] = useState<AppConfig>(defaultConfig);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadConfig = () => {
+    setSaveError(null);
     invoke<AppConfig>("get_config")
       .then((c) => {
+        const rawMode = (c as { mode?: string }).mode;
+        const mode = rawMode === "location" || rawMode === "Location" ? "Location" : "Fixed";
         setConfig({
           ...defaultConfig,
           ...c,
-          mode: c.mode === "Location" ? "Location" : "Fixed",
+          mode,
         });
       })
       .catch(() => setConfig(defaultConfig));
+  };
+
+  useEffect(() => {
+    loadConfig();
   }, []);
 
   const save = async () => {
+    setSaveError(null);
+    setSaving(true);
     try {
       const full = await invoke<AppConfig>("get_config").catch(() => defaultConfig);
-      const merged: AppConfig = { ...full, ...config };
+      const modeForBackend = config.mode === "Location" ? "location" : "fixed";
+      const merged = {
+        ...defaultConfig,
+        ...full,
+        ...config,
+        mode: modeForBackend,
+        sunriseTime: config.sunriseTime ?? defaultConfig.sunriseTime,
+        sunsetTime: config.sunsetTime ?? defaultConfig.sunsetTime,
+        location: config.location ?? defaultConfig.location,
+      };
       await invoke("save_config", { config: merged });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      setTimeout(() => setSaved(false), 2500);
+      loadConfig();
     } catch (e) {
-      console.error(e);
+      const msg = e instanceof Error ? e.message : String(e);
+      setSaveError(msg);
+      console.error("Schedule save failed:", e);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -153,13 +186,20 @@ export default function Schedule() {
       )}
 
       <motion.div style={{ marginTop: "var(--space-4)" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
+        {saveError && (
+          <p className="schedule-save-error" role="alert">
+            {saveError}
+          </p>
+        )}
         <motion.button
+          type="button"
           className="btn btn-primary btn-full"
           onClick={save}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          disabled={saving}
+          whileHover={saving ? {} : { scale: 1.02 }}
+          whileTap={saving ? {} : { scale: 0.98 }}
         >
-          {saved ? "✓ " : ""}{t("common.save")}
+          {saving ? t("schedule.saving") : saved ? "✓ " + t("schedule.saved") : t("common.save")}
         </motion.button>
       </motion.div>
     </motion.div>

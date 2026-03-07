@@ -20,7 +20,7 @@ fn config_path() -> PathBuf {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", default)]
 pub struct AppConfig {
     pub enabled: bool,
     pub mode: ScheduleMode,
@@ -53,10 +53,11 @@ fn default_sunset() -> String {
     "19:00".to_string()
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 pub enum ScheduleMode {
     /// Fixed time (sunrise_time / sunset_time)
+    #[default]
     Fixed,
     /// Sunrise/sunset by location (lat/lon)
     Location,
@@ -82,7 +83,7 @@ impl Default for AppConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", default)]
 pub struct LocationConfig {
     pub enabled: bool,
     pub lat: f64,

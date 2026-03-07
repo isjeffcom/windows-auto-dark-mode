@@ -31,6 +31,8 @@
     "mode": "Switch by",
     "fixed": "Fixed time",
     "location": "Sunrise & sunset (location)",
+    "saving": "Saving…",
+    "saved": "Saved",
     "sunrise": "Sunrise",
     "sunset": "Sunset",
     "latitude": "Latitude",
