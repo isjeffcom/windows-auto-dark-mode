@@ -22,12 +22,12 @@ const APPS_LIGHT: &str = "AppsUseLightTheme";
 const SYSTEM_LIGHT: &str = "SystemUsesLightTheme";
 const DWM_COLORIZATION: &str = "ColorizationColor";
 const TIMEOUT_MS: u32 = 5000;
-const DWM_REFRESH_SLEEP_MS: u64 = 800;
+const DWM_REFRESH_SLEEP_MS: u64 = 600;
+const TASKBAR_REFRESH_STEP_MS: u64 = 150;
 /// Delay before repeating broadcasts so secondary monitor taskbar can catch up
-const DELAYED_BROADCAST_MS: u64 = 1600;
-const REPEAT_BROADCAST_INTERVAL_MS: u64 = 250;
+const DELAYED_BROADCAST_MS: u64 = 1500;
+const REPEAT_BROADCAST_INTERVAL_MS: u64 = 300;
 const REPEAT_BROADCAST_COUNT: u32 = 3;
-const TASKBAR_REFRESH_STEP_MS: u64 = 120;
 const SETTING_CHANGE_TOPICS: [&str; 2] = ["ImmersiveColorSet", "WindowsThemeElement"];
 const SHELL_TASKBAR_CLASSES: [&str; 2] = ["Shell_TrayWnd", "Shell_SecondaryTrayWnd"];
 
@@ -124,7 +124,6 @@ fn broadcast_theme_change() {
     for topic in SETTING_CHANGE_TOPICS {
         send_setting_change(hwnd_broadcast(), Some(topic));
     }
-    // Some Explorer surfaces only react to a generic settings-change broadcast.
     send_setting_change(hwnd_broadcast(), None);
     send_message(hwnd_broadcast(), WM_THEMECHANGED, WPARAM(0), LPARAM(0));
     send_message(hwnd_broadcast(), WM_SYSCOLORCHANGE, WPARAM(0), LPARAM(0));
@@ -226,12 +225,13 @@ pub fn set_theme(
     thread::sleep(Duration::from_millis(TASKBAR_REFRESH_STEP_MS));
     refresh_dwm_via_colorization();
     refresh_shell_ui();
-    // Delayed repeat: secondary monitor taskbar often updates one step behind; give it
-    // another round of broadcasts so it catches up.
+    // Delayed repeat: secondary monitor taskbar (Shell_SecondaryTrayWnd) often
+    // processes theme changes one cycle behind the primary taskbar.
+    // One targeted pass after a short delay is enough without causing icon flicker.
     std::thread::spawn(|| {
         thread::sleep(Duration::from_millis(DELAYED_BROADCAST_MS));
         for _ in 0..REPEAT_BROADCAST_COUNT {
-            refresh_shell_ui();
+            refresh_shell_taskbars();
             thread::sleep(Duration::from_millis(REPEAT_BROADCAST_INTERVAL_MS));
         }
     });

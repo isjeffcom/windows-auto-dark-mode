@@ -18,7 +18,8 @@
         "resizable": true,
         "fullscreen": false,
         "center": true,
-        "transparent": true
+        "transparent": true,
+        "decorations": false
       }
     ],
     "security": {

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 
 interface AppConfig {
@@ -21,9 +21,26 @@ const defaultConfig: AppConfig = {
   language: "en",
 };
 
+const LANGS = [
+  { value: "en", label: "English" },
+  { value: "zh", label: "中文" },
+];
+
 export default function Settings() {
   const { t, i18n } = useTranslation();
   const [config, setConfig] = useState<AppConfig>(defaultConfig);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   useEffect(() => {
     invoke<AppConfig & Record<string, unknown>>("get_config")
@@ -125,19 +142,42 @@ export default function Settings() {
 
         <motion.div className="toggle-wrap settings-row" variants={itemAnim}>
           <span className="section-label">{t("settings.language")}</span>
-          <select
-            className="lang-select"
-            value={config.language ?? i18n.language}
-            onChange={(e) => {
-              const lang = e.target.value;
-              i18n.changeLanguage(lang);
-              saveWith({ language: lang });
-              invoke("update_tray_labels", { lang }).catch(() => {});
-            }}
-          >
-            <option value="en">English</option>
-            <option value="zh">中文</option>
-          </select>
+          <div className="custom-select" ref={langRef}>
+            <button
+              type="button"
+              className="custom-select-trigger"
+              onClick={() => setLangOpen((o) => !o)}
+            >
+              <span>{LANGS.find((l) => l.value === (config.language ?? "en"))?.label ?? "English"}</span>
+              <span className="custom-select-arrow">{langOpen ? "▲" : "▼"}</span>
+            </button>
+            <AnimatePresence>
+              {langOpen && (
+                <motion.ul
+                  className="custom-select-menu"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.13 }}
+                >
+                  {LANGS.map((lang) => (
+                    <li
+                      key={lang.value}
+                      className={`custom-select-item ${(config.language ?? "en") === lang.value ? "selected" : ""}`}
+                      onMouseDown={() => {
+                        i18n.changeLanguage(lang.value);
+                        saveWith({ language: lang.value });
+                        invoke("update_tray_labels", { lang: lang.value }).catch(() => {});
+                        setLangOpen(false);
+                      }}
+                    >
+                      {lang.label}
+                    </li>
+                  ))}
+                </motion.ul>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
       </motion.div>
 

@@ -13,6 +13,7 @@ html, body, #root {
 :root, [data-theme="dark"] {
   --bg-color:        rgba(23, 23, 23, 0.77);
   --sidebar-bg:      rgba(16, 16, 16, 0.72);
+  --content-bg:      rgba(48, 48, 48, 0.65);
   --sidebar-border:  rgba(255, 255, 255, 0.07);
 
   --layer-hover:     rgba(255, 255, 255, 0.07);
@@ -35,10 +36,10 @@ html, body, #root {
 }
 
 [data-theme="light"] {
-  --bg-color:        rgba(255, 255, 255, 0.75);
-
-  --sidebar-bg:      rgba(243, 243, 243, 0.75);
-  --sidebar-border:  rgba(0, 0, 0, 0.07);
+  --bg-color:        rgba(242, 242, 242, 0.85);
+  --sidebar-bg:      rgba(242, 242, 242, 0.85);
+  --content-bg:      rgba(255, 255, 255, 0.90);
+  --sidebar-border:  rgba(0, 0, 0, 0.08);
 
   --layer-hover:     rgba(0, 0, 0, 0.04);
   --layer-active:    rgba(0, 0, 0, 0.07);
@@ -74,41 +75,112 @@ body {
 .app {
   height: 100%;
   display: flex;
+  flex-direction: column;
   background: var(--sidebar-bg);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ── Title bar (unified with sidebar, rounded top corners) ───────── */
+.title-bar {
+  height: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  flex-shrink: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.title-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  padding-right: 12px;
+}
+
+.title-bar-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.title-bar-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.title-bar-spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+.window-controls {
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.win-btn {
+  width: 46px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.win-btn:hover {
+  background: var(--layer-hover);
+  color: var(--text-primary);
+}
+
+.win-btn-close:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+.win-btn::before {
+  font-family: "Segoe MDL2 Assets", "Segoe Fluent Icons", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* Standard Windows MDL2 icon codes */
+.win-btn:first-of-type::before  { content: "\E921"; } /* ChromeMinimize */
+.win-btn:nth-of-type(2)::before { content: "\E922"; } /* ChromeMaximize */
+.win-btn-close::before          { content: "\E8BB"; font-size: 10px; } /* ChromeClose */
+
+/* ── Body: sidebar + content ────────────────── */
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  background: transparent;
 }
 
 /* ── Sidebar ───────────────────────────────── */
 .sidebar {
   width: 200px;
   flex-shrink: 0;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border);
+  background: transparent;
+  border-right: 0px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
   padding: 16px 10px 14px;
-}
-
-.sidebar-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 2px 12px 20px;
-}
-
-.sidebar-logo {
-  width: 22px;
-  height: 22px;
-  border-radius: 5px;
-  flex-shrink: 0;
-}
-
-.sidebar-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .sidebar-nav {
@@ -128,11 +200,12 @@ body {
   font-weight: 500;
   color: var(--text-secondary);
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
+  border: 0px solid transparent;
+  border-radius: 6px;
+  outline: none;
   cursor: pointer;
   text-align: left;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background 0.22s ease, color 0.22s ease;
 }
 
 .sidebar-item:hover {
@@ -147,18 +220,25 @@ body {
   border-color: var(--border-default);
 }
 
-/* ── Main content ──────────────────────────── */
+/* ── Main content (card with margin on all sides) ──────────────────────────── */
 .main-wrap {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: transparent;
+  margin: 8px 8px 8px 8px;
+  border-radius: 8px;
+  background: var(--content-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .main-wrap {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
 }
 
 .content {
   flex: 1;
-  padding: 32px 40px;
+  padding: 28px 36px 32px;
   overflow-y: auto;
 }
 
@@ -236,13 +316,13 @@ body {
   margin-bottom: 20px;
 }
 
-/* ── Theme segmented control ──────────────── */
+/* ── Theme segmented control (rounded-lg, not pill) ──────────────── */
 .theme-btn-group {
   display: inline-flex;
   width: 100%;
   background: var(--layer-control);
   border: 1px solid var(--border-default);
-  border-radius: 999px;
+  border-radius: 8px;
   padding: 3px;
 }
 
@@ -254,7 +334,7 @@ body {
   color: var(--text-secondary);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
@@ -265,9 +345,16 @@ body {
 }
 
 .theme-btn.active {
-  background: var(--layer-active);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
   border-color: var(--border-default);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .theme-btn.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .theme-btn:disabled {
@@ -326,7 +413,7 @@ body {
   border: 1px solid var(--border-default);
   background: var(--layer-control);
   color: var(--text-primary);
-  border-radius: 7px;
+  border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -412,12 +499,12 @@ select option {
   color: #f0f0f0;
 }
 
-/* Dark mode: hover/selected only slightly brighter, not stark white */
+/* Dark mode: selected/hover = accent highlight (light text on dark accent) */
 select option:hover,
 select option:focus,
 select option:checked {
-  background: #2d2d2d;
-  color: #f5f5f5;
+  background: #3a3a3a;
+  color: #ffffff;
 }
 
 [data-theme="light"] select option {
@@ -436,6 +523,93 @@ input:focus, select:focus {
   outline: none;
   border-color: var(--border-strong);
   box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+/* ── Custom select dropdown ───────────────── */
+.custom-select {
+  position: relative;
+  min-width: 130px;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 11px;
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--layer-input);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.custom-select-trigger:hover {
+  border-color: var(--border-strong);
+}
+
+.custom-select-arrow {
+  font-size: 9px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.custom-select-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--layer-input);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  backdrop-filter: blur(12px);
+}
+
+[data-theme="dark"] .custom-select-menu {
+  background: #252525;
+  border-color: rgba(255,255,255,0.12);
+}
+
+[data-theme="light"] .custom-select-menu {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.custom-select-item {
+  padding: 7px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.custom-select-item:hover {
+  background: var(--layer-hover);
+}
+
+.custom-select-item.selected {
+  background: var(--layer-active);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .custom-select-item.selected {
+  background: rgba(255,255,255,0.15);
+}
+
+[data-theme="light"] .custom-select-item.selected {
+  background: rgba(0,0,0,0.08);
 }
 
 /* ── Type utils ───────────────────────────── */

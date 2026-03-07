@@ -74,33 +74,47 @@ function App() {
     { key: "about", labelKey: "nav.about" },
   ];
 
+  const win = getCurrentWindow();
+  const handleMinimize = () => win.minimize();
+  const handleMaximize = () => win.toggleMaximize();
+  const handleClose = () => win.close(); // Rust intercepts → hide to tray
+
   return (
     <div className="app">
-      <motion.aside
-        className="sidebar"
-        variants={sidebarVariants}
-        initial="hidden"
-        animate={hasEntered ? "visible" : "hidden"}
-      >
-        <div className="sidebar-head">
+      <header className="title-bar" data-tauri-drag-region>
+        <div className="title-bar-left">
           <motion.img
             src="/Tray_Icon.png"
             alt=""
-            className="sidebar-logo"
+            className="title-bar-logo"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={hasEntered ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 0.61, 0.36, 1] }}
           />
           <motion.span
-            className="sidebar-title"
-            initial={{ opacity: 0, y: 4 }}
-            animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 4 }}
-            transition={{ duration: 0.3, delay: 0.18 }}
+            className="title-bar-title"
+            initial={{ opacity: 0, y: 2 }}
+            animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 2 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
           >
             {t("app.title")}
           </motion.span>
         </div>
-        <nav className="sidebar-nav">
+        <div className="title-bar-spacer" data-tauri-drag-region />
+        <div className="window-controls">
+          <button type="button" className="win-btn" onClick={handleMinimize} aria-label="Minimize" />
+          <button type="button" className="win-btn" onClick={handleMaximize} aria-label="Maximize" />
+          <button type="button" className="win-btn win-btn-close" onClick={handleClose} aria-label="Close" />
+        </div>
+      </header>
+      <div className="app-body">
+        <motion.aside
+          className="sidebar"
+          variants={sidebarVariants}
+          initial="hidden"
+          animate={hasEntered ? "visible" : "hidden"}
+        >
+          <nav className="sidebar-nav">
           {navItems.map(({ key, labelKey }, i) => (
             <motion.button
               key={key}
@@ -117,10 +131,10 @@ function App() {
               <span className="sidebar-item-label">{t(labelKey)}</span>
             </motion.button>
           ))}
-        </nav>
-      </motion.aside>
-      <motion.div
-        className="main-wrap"
+          </nav>
+        </motion.aside>
+        <motion.div
+          className="main-wrap"
         variants={mainVariants}
         initial="hidden"
         animate={hasEntered ? "visible" : "hidden"}
@@ -177,7 +191,8 @@ function App() {
             )}
           </AnimatePresence>
         </main>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
