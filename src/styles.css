@@ -90,6 +90,7 @@ body {
   background: transparent;
   flex-shrink: 0;
   border-radius: 10px 10px 0 0;
+  user-select: none;
 }
 
 .title-bar-left {
@@ -121,6 +122,9 @@ body {
 .title-bar-spacer {
   flex: 1;
   min-width: 0;
+  align-self: stretch;
+  min-height: 100%;
+  cursor: default;
 }
 
 .window-controls {
@@ -203,6 +207,7 @@ body {
   border: 0px solid transparent;
   border-radius: 6px;
   outline: none;
+  user-select: none;
   cursor: pointer;
   text-align: left;
   transition: background 0.22s ease, color 0.22s ease;
@@ -475,6 +480,7 @@ body {
 /* ── Inputs ───────────────────────────────── */
 input[type="text"],
 input[type="number"],
+input[type="time"],
 select {
   font-family: inherit;
   font-size: 13px;
@@ -490,6 +496,7 @@ select {
 
 [data-theme="light"] input[type="text"],
 [data-theme="light"] input[type="number"],
+[data-theme="light"] input[type="time"],
 [data-theme="light"] select {
   color-scheme: light;
 }
@@ -610,6 +617,148 @@ input:focus, select:focus {
 
 [data-theme="light"] .custom-select-item.selected {
   background: rgba(0,0,0,0.08);
+}
+
+/* ── Time picker ──────────────────────────── */
+.time-picker {
+  position: relative;
+  width: 100%;
+}
+
+.time-picker-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  background: var(--layer-input);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.time-picker-trigger:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+.time-picker-icon {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.time-picker-value {
+  flex: 1;
+  text-align: left;
+  letter-spacing: 0.02em;
+}
+
+.time-picker-chevron {
+  font-size: 10px;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+.time-picker-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 12px;
+  background: var(--content-bg);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  backdrop-filter: blur(12px);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .time-picker-popover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.time-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.time-picker-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.time-picker-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.time-picker-stepper {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 4px;
+  background: var(--layer-input);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  min-width: 0;
+}
+
+.time-picker-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-primary);
+  background: var(--layer-control);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.time-picker-btn:hover {
+  background: var(--layer-hover);
+  color: var(--accent);
+}
+
+.time-picker-num {
+  min-width: 28px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+.time-picker-sep {
+  align-self: flex-end;
+  margin-bottom: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 /* ── Type utils ───────────────────────────── */

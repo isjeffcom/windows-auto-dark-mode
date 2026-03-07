@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
+import TimePicker from "../components/TimePicker";
 
 interface AppConfig {
   enabled: boolean;
@@ -94,20 +95,18 @@ export default function Schedule() {
           <div className="form-row">
             <label>
               {t("schedule.sunrise")}
-              <input
-                type="text"
+              <TimePicker
                 value={config.sunriseTime}
-                onChange={(e) => update({ sunriseTime: e.target.value })}
-                placeholder="07:00"
+                onChange={(v) => update({ sunriseTime: v })}
+                aria-label={t("schedule.sunrise")}
               />
             </label>
             <label>
               {t("schedule.sunset")}
-              <input
-                type="text"
+              <TimePicker
                 value={config.sunsetTime}
-                onChange={(e) => update({ sunsetTime: e.target.value })}
-                placeholder="19:00"
+                onChange={(v) => update({ sunsetTime: v })}
+                aria-label={t("schedule.sunset")}
               />
             </label>
           </div>

@@ -81,8 +81,8 @@ function App() {
 
   return (
     <div className="app">
-      <header className="title-bar" data-tauri-drag-region>
-        <div className="title-bar-left">
+      <header className="title-bar">
+        <div className="title-bar-left" data-tauri-drag-region>
           <motion.img
             src="/Tray_Icon.png"
             alt=""
@@ -101,7 +101,7 @@ function App() {
           </motion.span>
         </div>
         <div className="title-bar-spacer" data-tauri-drag-region />
-        <div className="window-controls">
+        <div className="window-controls" data-no-drag>
           <button type="button" className="win-btn" onClick={handleMinimize} aria-label="Minimize" />
           <button type="button" className="win-btn" onClick={handleMaximize} aria-label="Maximize" />
           <button type="button" className="win-btn win-btn-close" onClick={handleClose} aria-label="Close" />
