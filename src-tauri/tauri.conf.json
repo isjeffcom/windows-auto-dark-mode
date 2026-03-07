@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Auto Dark Mode",
-  "version": "1.0.4",
-  "identifier": "com.autodarkmode.app",
+  "version": "1.0.5",
+  "identifier": "com.isjeffcom.winautodarkmode",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:5173",
@@ -31,7 +31,13 @@
     "active": true,
     "targets": ["nsis"],
     "icon": ["icons/Tray_Icon.ico"],
-    "resources": ["icons/*.ico"]
+    "resources": ["icons/*.ico"],
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/Tray_Icon.ico",
+        "sidebarImage": "../nsis_sideimg.bmp"
+      }
+    }
   },
   "plugins": {
     "shell": {

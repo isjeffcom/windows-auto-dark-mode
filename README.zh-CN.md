@@ -1,7 +1,7 @@
 ![Banner](readme_cover.png)
 # 自动深色模式 (Auto Dark Mode)
 
-> For English, see [README.md](README.md)
+> [English](README.md)
 
 一款轻量级 Windows 应用，按**固定时间**或**日出/日落**（按地区）自动在深色与浅色模式之间切换。使用 [Tauri 2](https://v2.tauri.app/) + React 构建。
 
@@ -12,11 +12,11 @@
 - **应用主题**：切换应用标题栏（如资源管理器、设置）
 - **系统托盘**：长期静默运行于后台；关闭窗口即最小化到托盘
 - **开机自启**：可选，登录时自动启动
-- **语言**：中文、English
+- **语言**：简体中文、英文
 
 ## 运行环境
 
-- **Windows 11**（64 位）
+- **Windows 11**（64 位）。理论上也支持 Windows 10，但测试与支持以 Windows 11 为主。
 
 ## 隐私说明
 
@@ -24,8 +24,10 @@
 
 ## 下载（GitHub Releases）
 
-- **安装包**（`Auto Dark Mode_[版本]_x64-setup.exe`）：推荐。运行后安装，可选“开始菜单”和“开机自启”。
-- **便携版**（`windows-auto-dark-mode.exe`）：单文件，无需安装，解压或复制到任意目录运行即可。
+- **安装包**（`AutoDarkMode-setup.exe`）：推荐。运行后安装，可选“开始菜单”和“开机自启”。
+- **便携版**（`AutoDarkMode-portable.exe`）：单文件，无需安装，解压或复制到任意目录运行即可。
+
+**未签名说明**：本应用未做代码签名，Windows 可能会弹出“Windows 已保护你的电脑”。请点击 **更多信息** → **仍要运行**。项目开源，可自行审查代码并本地构建。
 
 ## 从源码构建
 

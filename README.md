@@ -3,7 +3,7 @@
 
 A lightweight Windows app that automatically switches between dark and light mode by **fixed time** or **sunrise/sunset** (location-based). Built with [Tauri 2](https://v2.tauri.app/) and React.
 
-> 中文 [README.zh-CN.md](README.zh-CN.md)
+> [中文](README.zh-CN.md)
 
 ## Features
 
@@ -12,11 +12,11 @@ A lightweight Windows app that automatically switches between dark and light mod
 - **App theme**: Switch app title bar (e.g. Explorer, Settings)
 - **System tray**: Runs silently in the background; close the window to minimize to tray
 - **Start with Windows**: Optional autostart on login
-- **Languages**: English and 中文
+- **Languages**: English and Simplified Chinese
 
 ## Requirements
 
-- **Windows 11** (64-bit)
+- **Windows 11** (64-bit). Theoretically works on Windows 10; testing and support focus on Windows 11.
 
 ## Privacy
 
@@ -24,8 +24,10 @@ Auto Dark Mode is **fully offline**. It does not collect, transmit, or store any
 
 ## Download (GitHub Releases)
 
-- **Installer** (`Auto Dark Mode_[VERSION]_x64-setup.exe`): Recommended. Run to install and optionally add a Start Menu shortcut and “Start with Windows”.
-- **Portable** (`windows-auto-dark-mode.exe`): Single executable; no install. Place anywhere and run.
+- **Installer** (`AutoDarkMode-setup.exe`): Recommended. Run to install and optionally add a Start Menu shortcut and “Start with Windows”.
+- **Portable** (`AutoDarkMode-portable.exe`): Single executable; no install. Place anywhere and run.
+
+**Unsigned build:** The app is not code-signed. Windows SmartScreen may show “Windows protected your PC” — choose **More info** → **Run anyway**. The project is open source; you can verify the code and build it yourself.
 
 ## Build from source
 
