@@ -29,6 +29,7 @@
   },
   "bundle": {
     "active": true,
+    "publisher": "Jeff @ Soda Game Studio",
     "targets": ["nsis"],
     "icon": ["icons/Tray_Icon.ico"],
     "resources": ["icons/*.ico"],
