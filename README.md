@@ -3,19 +3,24 @@
 
 A lightweight Windows app that automatically switches between dark and light mode by **fixed time** or **sunrise/sunset** (location-based). Built with [Tauri 2](https://v2.tauri.app/) and React.
 
+> 中文 [README.zh-CN.md](README.zh-CN.md)
+
 ## Features
 
 - **Schedule**: Fixed times (e.g. 07:00 → Light, 19:00 → Dark) or sunrise/sunset by latitude/longitude
 - **System theme**: Switch taskbar and window borders
 - **App theme**: Switch app title bar (e.g. Explorer, Settings)
-- **System tray**: Run in background; close window to minimize to tray
-- **Start with Windows**: Optional autostart
+- **System tray**: Runs silently in the background; close the window to minimize to tray
+- **Start with Windows**: Optional autostart on login
 - **Languages**: English and 中文
 
 ## Requirements
 
-- **Windows 10/11** (64-bit)
-- [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (usually preinstalled on Windows 11)
+- **Windows 11** (64-bit)
+
+## Privacy
+
+Auto Dark Mode is **fully offline**. It does not collect, transmit, or store any personal data. The only network request it ever makes is an optional **update check** — it fetches the public GitHub Releases page to compare version numbers. No telemetry, no tracking, no accounts required.
 
 ## Download (GitHub Releases)
 
