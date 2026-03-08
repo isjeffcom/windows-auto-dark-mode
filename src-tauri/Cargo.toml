@@ -1,6 +1,6 @@
 [package]
 name = "windows-auto-dark-mode"
-version = "1.0.7"
+version = "1.0.8"
 description = "Auto dark/light mode for Windows by time or location"
 authors = ["you"]
 edition = "2021"
