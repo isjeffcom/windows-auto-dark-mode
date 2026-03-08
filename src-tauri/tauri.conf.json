@@ -31,11 +31,11 @@
     "active": true,
     "publisher": "Jeff @ Soda Game Studio",
     "targets": ["nsis"],
-    "icon": ["icons/Tray_Icon.ico"],
-    "resources": ["icons/*.ico"],
+    "icon": ["../resources/Tray_Icon_512.ico"],
+    "resources": ["icons/*.ico", "../resources/Tray_Icon_512.ico"],
     "windows": {
       "nsis": {
-        "installerIcon": "icons/Tray_Icon.ico",
+        "installerIcon": "../resources/Tray_Icon_512.ico",
         "sidebarImage": "../nsis_sideimg.bmp"
       }
     }

@@ -4487,7 +4487,7 @@ dependencies = [
 
 [[package]]
 name = "windows-auto-dark-mode"
-version = "1.0.7"
+version = "1.0.8"
 dependencies = [
  "chrono",
  "ctrlc",

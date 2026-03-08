@@ -79,6 +79,14 @@ body {
   background: var(--sidebar-bg);
   border-radius: 10px;
   overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* Allow selection inside inputs when editing */
+.app input,
+.app textarea {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* ── Title bar (unified with sidebar, rounded top corners) ───────── */

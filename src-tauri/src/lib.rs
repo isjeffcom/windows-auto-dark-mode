@@ -10,6 +10,7 @@ mod theme;
 use config::AppConfig;
 use scheduler::Scheduler;
 use std::sync::Mutex;
+use tauri::include_image;
 use tauri::State;
 
 pub struct AppState {
@@ -251,6 +252,7 @@ pub fn run() {
             }
 
             // Native tray icon via Tauri 2 built-in API.
+            // Use 32x32 icon for tray so it stays sharp (tray is small; 512 scaled down looks blurry).
             #[cfg(target_os = "windows")]
             {
                 use tauri::Manager;
@@ -271,10 +273,7 @@ pub fn run() {
 
                 let menu = tauri::menu::Menu::with_items(app, &[&show_i, &quit_i])?;
 
-                let icon = app
-                    .default_window_icon()
-                    .ok_or("no app icon configured")?
-                    .clone();
+                let icon = include_image!("../resources/Tray_Icon_32.ico");
 
                 let tray = TrayIconBuilder::new()
                     .icon(icon)
