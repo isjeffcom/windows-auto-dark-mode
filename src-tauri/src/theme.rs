@@ -226,13 +226,18 @@ pub fn set_theme(
     refresh_dwm_via_colorization();
     refresh_shell_ui();
     // Delayed repeat: secondary monitor taskbar (Shell_SecondaryTrayWnd) often
-    // processes theme changes one cycle behind the primary taskbar.
-    // One targeted pass after a short delay is enough without causing icon flicker.
+    // processes theme changes one cycle behind the primary taskbar. Same logic
+    // for both manual (Dashboard button) and scheduler (first run / timer).
+    // First wave at DELAYED_BROADCAST_MS; second wave later for slow-to-appear
+    // secondary taskbars (e.g. right after app start or monitor wake).
+    const SECOND_WAVE_DELAY_MS: u64 = 3500;
     std::thread::spawn(|| {
-        thread::sleep(Duration::from_millis(DELAYED_BROADCAST_MS));
-        for _ in 0..REPEAT_BROADCAST_COUNT {
-            refresh_shell_taskbars();
-            thread::sleep(Duration::from_millis(REPEAT_BROADCAST_INTERVAL_MS));
+        for wave_delay in [DELAYED_BROADCAST_MS, SECOND_WAVE_DELAY_MS] {
+            thread::sleep(Duration::from_millis(wave_delay));
+            for _ in 0..REPEAT_BROADCAST_COUNT {
+                refresh_shell_taskbars();
+                thread::sleep(Duration::from_millis(REPEAT_BROADCAST_INTERVAL_MS));
+            }
         }
     });
     Ok(())

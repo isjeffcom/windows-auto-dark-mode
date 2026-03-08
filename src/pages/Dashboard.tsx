@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 const SWITCH_COOLDOWN_MS = 10000;
 const PROGRESS_INTERVAL_MS = 50;
@@ -92,6 +93,14 @@ export default function Dashboard() {
   const setThemeTo = useCallback(
     async (light: boolean) => {
       if (isSwitching) return;
+
+      // Our app switches immediately; system (taskbar, etc.) updates in the background.
+      document.documentElement.setAttribute("data-theme", light ? "light" : "dark");
+      getCurrentWindow().setTheme(light ? "light" : "dark").catch(() => {});
+      setTheme((prev) =>
+        prev ? { ...prev, is_light: light, apps_light: light, system_light: light } : null
+      );
+
       setIsSwitching(true);
       setSwitchProgress(0);
 

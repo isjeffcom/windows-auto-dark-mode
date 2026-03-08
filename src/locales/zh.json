@@ -54,6 +54,7 @@
   "about": {
     "title": "关于",
     "description": "根据时间或您所在地区的日出日落，自动切换 Windows 的深色与浅色模式。",
+    "sodaGame": "Soda Game",
     "version": "版本",
     "checkForUpdates": "检查更新",
     "checking": "检查中…",

@@ -162,17 +162,23 @@ fn is_version_newer(latest: &str, current: &str) -> bool {
 
 const RELEASE_URL: &str = "https://github.com/isjeffcom/windows-auto-dark-mode/releases";
 
-/// Open the GitHub releases page in the default browser.
+/// Open a URL in the default browser.
 #[tauri::command]
-fn open_release_page() -> Result<(), String> {
+fn open_url(url: String) -> Result<(), String> {
     #[cfg(windows)]
     std::process::Command::new("cmd")
-        .args(["/C", "start", "", RELEASE_URL])
+        .args(["/C", "start", "", url.as_str()])
         .spawn()
         .map_err(|e| e.to_string())?;
     #[cfg(not(windows))]
-    let _ = RELEASE_URL;
+    let _ = url;
     Ok(())
+}
+
+/// Open the GitHub releases page in the default browser.
+#[tauri::command]
+fn open_release_page() -> Result<(), String> {
+    open_url(RELEASE_URL.to_string())
 }
 
 fn tray_menu_labels(lang: &str) -> (String, String) {
@@ -231,6 +237,7 @@ pub fn run() {
             get_version,
             exit_app,
             update_tray_labels,
+            open_url,
             open_release_page,
             check_for_update,
         ])

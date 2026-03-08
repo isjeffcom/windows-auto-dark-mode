@@ -54,6 +54,7 @@
   "about": {
     "title": "About",
     "description": "Automatically switch Windows between dark and light mode by time or by sunrise/sunset at your location.",
+    "sodaGame": "Soda Game",
     "version": "Version",
     "checkForUpdates": "Check for updates",
     "checking": "Checking...",
